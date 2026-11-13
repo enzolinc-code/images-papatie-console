@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+config.json
+.venv/
+__pycache__/
+*.py[cod]
+data/
+qa/
+runs/
+runtime/
+*.log
+*.zip
+.DS_Store

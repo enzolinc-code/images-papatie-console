@@ -1,0 +1,4 @@
+interface:
+  display_name: "趴趴立牌工作台"
+  short_description: "生成完整趴趴动作与透明立牌，并将人物保真批量合成到不同场景"
+  default_prompt: "使用 $papapai-studio 制作趴趴立牌并批量放入我的本地场景。"

@@ -1,0 +1,9 @@
+{
+  "port": 8796,
+  "endpoint": "https://agent3.shyfai.cn",
+  "model": "gpt-image-2",
+  "channel4_endpoint": "https://agent3.shyfai.cn",
+  "channel4_model": "gpt-image-2.5-cdn",
+  "timeout": 600,
+  "matting_runtime": "runtime/matting"
+}
