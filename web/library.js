@@ -1,0 +1,14 @@
+(function(){
+ const categories=document.createElement('div');categories.id='libCategories';categories.className='lib-categories';categories.innerHTML='<button data-lib-category="all">全部</button><button data-lib-category="pending">待检查</button><button data-lib-category="ready">可分发</button>';document.querySelector('.g-toolbar').append(categories);
+ $('gSearch').placeholder='搜索作品名称';
+ const filters=document.querySelector('.st-filter-more');filters.querySelector('summary').textContent='筛选';filters.insertBefore($('gKind'),$('gDate'));filters.insertBefore($('gReview'),$('gDate'));
+ const oldFilter=gFilter;gFilter=function(x){if(!oldFilter(x))return false;if(gv.view==='tasks')return true;const review=x.t.review||'pending';return gv.category==='all'||(gv.category==='pending'?review==='pending':review==='accepted');};
+ const oldRender=renderJobs;let lastBatch=gv.batch;
+ renderJobs=function(force=false){if(gv.batch!==lastBatch){gv.selecting=false;gv.selected.clear();lastBatch=gv.batch;}oldRender(force);categories.hidden=gv.view==='tasks';$('gActive').hidden=gv.view!=='tasks';document.body.classList.toggle('lib-selecting',gv.selecting&&gv.view!=='tasks');document.querySelectorAll('[data-lib-category]').forEach(b=>{const active=b.dataset.libCategory===gv.category;b.classList.toggle('active',active);b.setAttribute('aria-pressed',active?'true':'false')});};
+ const oldOpen=gOpen;gOpen=function(key){if(gv.selecting){gv.selected.has(key)?gv.selected.delete(key):gv.selected.add(key);renderJobs(true);return}oldOpen(key)};
+ const download=$('gDownload');const more=document.createElement('details');more.className='lib-more lib-light-more';more.innerHTML='<summary>更多</summary><div id="libLightMore"><button class="ghost" id="libRedo">重做这张 · 1次生图</button></div>';download.before(more);$('libLightMore').append(download);
+ const oldPicture=gPicture;gPicture=function(){oldPicture();const x=gv.viewer[gv.at];if(!x)return;$('gLightTitle').textContent=gLabel(x.j)+' · '+gReviewNames[x.t.review||'pending'];const b=$('libRedo');b.hidden=x.t.kind!=='scene';if(x.t.kind==='scene'){b.dataset.redo=x.j.id;b.dataset.taskIndex=x.i;}else{delete b.dataset.redo;delete b.dataset.taskIndex;}more.open=false;};
+ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.libCategory){gv.category=b.dataset.libCategory;$('gReview').value='all';gv.page=1;gv.selected.clear();renderJobs(true)}if(b.id==='libSelect'){gv.selecting=!gv.selecting;if(!gv.selecting)gv.selected.clear();renderJobs(true)}if(b.id==='gReset'){gv.category='all';renderJobs(true)}if(b.id==='stLibrary'){gv.selecting=false;gv.selected.clear();renderJobs(true)}});
+ $('gReview').addEventListener('change',()=>{gv.category='all';renderJobs(true)});
+ renderJobs(true);
+})();

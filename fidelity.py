@@ -1,5 +1,6 @@
 """Local standee compositing. No image-model call is made from this module."""
 import base64,hashlib,io,json,math
+import acrylic
 from functools import lru_cache
 from pathlib import Path
 from PIL import Image,ImageDraw,ImageFilter,ImageChops,ImageOps
@@ -56,6 +57,14 @@ def coefficients(dst,src):
 def render(scene,product,template,target,layers=None):
     base=Image.open(scene).convert("RGBA")
     fg=Image.open(product).convert("RGBA")
+    gain=template.get("photometric",{}).get("gain")
+    if gain is not None:
+        if not isinstance(gain,list) or len(gain)!=3:raise ValueError("环境匹色参数无效")
+        channels=list(fg.split())
+        for i,value in enumerate(gain):
+            value=number(value,.95,1.05,"环境匹色")
+            channels[i]=channels[i].point([max(0,min(255,round(n*value))) for n in range(256)])
+        fg=Image.merge("RGBA",channels)
     alpha=fg.getchannel("A");bbox=alpha.getbbox()
     if bbox is None or alpha.getextrema()[0]==255:raise ValueError("请选择真实透明PNG立牌")
     fg=fg.crop(bbox)
@@ -78,16 +87,21 @@ def render(scene,product,template,target,layers=None):
     a=warped.getchannel("A")
     contact=number(template.get("shadow",.15),0,.5,"阴影")
     rim=number(template.get("rim",.12),0,.4,"透明切边")
-    separate={}
-    if contact:
-        shadow=Image.new("L",base.size)
-        shadow.paste(a,(max(1,round(base.width*.003)),max(1,round(base.height*.004))))
-        shadow=shadow.filter(ImageFilter.GaussianBlur(max(1,base.width*.002))).point(lambda x:round(x*contact))
-        layer=Image.new("RGBA",base.size,(0,0,0));layer.putalpha(shadow);base.alpha_composite(layer);separate["shadow"]=layer
-    if rim:
-        edge=ImageChops.subtract(a.filter(ImageFilter.MaxFilter(3)),a).point(lambda x:round(x*rim))
-        layer=Image.new("RGBA",base.size,(235,243,247));layer.putalpha(edge);base.alpha_composite(layer);separate["rim"]=layer
-    base.alpha_composite(warped)
+    material=template.get('material','clear_acrylic_v2' if contact or rim else 'off')
+    material_proof=None
+    if material=='clear_acrylic_v2':
+        base,separate,material_proof=acrylic.render(base,warped,contact,rim)
+    else:
+        separate={}
+        if contact:
+            shadow=Image.new("L",base.size)
+            shadow.paste(a,(max(1,round(base.width*.003)),max(1,round(base.height*.004))))
+            shadow=shadow.filter(ImageFilter.GaussianBlur(max(1,base.width*.002))).point(lambda x:round(x*contact))
+            layer=Image.new("RGBA",base.size,(0,0,0));layer.putalpha(shadow);base.alpha_composite(layer);separate["shadow"]=layer
+        if rim:
+            edge=ImageChops.subtract(a.filter(ImageFilter.MaxFilter(3)),a).point(lambda x:round(x*rim))
+            layer=Image.new("RGBA",base.size,(235,243,247));layer.putalpha(edge);base.alpha_composite(layer);separate["rim"]=layer
+        base.alpha_composite(warped)
     target=Path(target);target.parent.mkdir(parents=True,exist_ok=True)
     base.convert("RGB").save(target,format="PNG")
     if layers:
@@ -95,7 +109,7 @@ def render(scene,product,template,target,layers=None):
         warped.save(folder/"人物原图透视层.png")
         for name,im in separate.items():im.save(folder/(name+".png"))
     return {"size":base.size,"method":"original_png_homography","source_hash":digest(str(product)),
-            "template":q,"note":"只做整体透视和透明合成，未重绘人物；换算含插值，不保证逐像素相同"}
+            "template":q,"photometric":template.get("photometric"),"material":material_proof,"note":"只做整体透视和透明合成，未重绘人物；换算含插值，不保证逐像素相同"}
 
 def merge_cleanup(original,generated,mask,target):
     base=Image.open(original).convert("RGB")

@@ -26,9 +26,9 @@ class FidelityTests(unittest.TestCase):
     def test_ready_requires_clean_background_approval(self):
         self.template()
         with self.assertRaisesRegex(ValueError,"确认干净背景"):
-            s.make_plan({"mode":"scenes","products":[self.product["id"]],"scenes":[self.scene["id"]]})
+            s.make_plan({"mode":"scenes","scene_engine":"fidelity","products":[self.product["id"]],"scenes":[self.scene["id"]]})
         self.template(use_original=True);store=f.Store(s.DATA,s.asset_path);store.approve(self.scene["id"])
-        tasks=s.make_plan({"mode":"scenes","products":[self.product["id"]],"scenes":[self.scene["id"]],"channel":"4"})
+        tasks=s.make_plan({"mode":"scenes","scene_engine":"fidelity","products":[self.product["id"]],"scenes":[self.scene["id"]],"channel":"4"})
         self.assertEqual(tasks[0]["kind"],"fidelity");self.assertEqual(tasks[0]["channel"],"local")
     def test_polygon_validation_rejects_crossed_quad(self):
         with self.assertRaises(ValueError):f.quad([[0,0],[1,1],[1,0],[0,1]])
@@ -42,8 +42,8 @@ class FidelityTests(unittest.TestCase):
                 if not self.items:raise SystemExit
                 return self.items.pop(0)
             def task_done(self):pass
-        with patch.object(s,"Q",LocalQueue()),patch.object(s,"generate",side_effect=AssertionError("no image API")),patch.object(s,"channel_key",return_value=""):
-            j=s.create_job({"nonce":"fidelity-local-job-1234","mode":"scenes","products":[self.product["id"]],"scenes":[self.scene["id"]],"channel":"4"})
+        with patch.object(s,"Q",LocalQueue()),patch.object(s.scene_outputs,"sync_job",return_value=None),patch.object(s,"generate",side_effect=AssertionError("no image API")),patch.object(s,"channel_key",return_value=""):
+            j=s.create_job({"nonce":"fidelity-local-job-1234","mode":"scenes","scene_engine":"fidelity","products":[self.product["id"]],"scenes":[self.scene["id"]],"channel":"4"})
             with self.assertRaises(SystemExit):s.worker()
         self.assertEqual(j["status"],"done")
         self.assertEqual(s.asset_path(self.product["id"]).read_bytes(),source)

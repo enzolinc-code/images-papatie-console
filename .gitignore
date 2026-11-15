@@ -12,3 +12,5 @@ runtime/
 *.log
 *.zip
 .DS_Store
+
+成品/

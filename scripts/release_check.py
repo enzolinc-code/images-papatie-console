@@ -2,7 +2,7 @@
 import hashlib,json,re,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-EXCLUDED={'.git','.venv','data','qa','runs','runtime','__pycache__','.pytest_cache'}
+EXCLUDED={'成品','.git','.venv','data','qa','runs','runtime','__pycache__','.pytest_cache'}
 
 def publishable(root=ROOT):
     for p in sorted(root.rglob('*')):
