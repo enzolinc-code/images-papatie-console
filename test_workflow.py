@@ -79,11 +79,11 @@ class WorkflowTests(unittest.TestCase):
     def test_channel4_plan_and_model_are_fixed(self):
         task=s.make_plan({"mode":"poses","source":self.ref["id"],"poses":["heart"],"channel":"4"})[0]
         self.assertEqual(task["channel"],"4")
-        self.assertEqual(task["model"],"gpt-image-2.5-cdn")
+        self.assertEqual(task["model"],"banana-pro")
         folder=s.DATA/"ch4";folder.mkdir()
         def runner(cmd,folder,timeout,channel="3"):
             self.assertEqual(channel,"4")
-            self.assertEqual(cmd[cmd.index("--model")+1],"gpt-image-2.5-cdn")
+            self.assertEqual(cmd[cmd.index("--model")+1],"banana-pro")
             Image.new("RGBA",(100,100),(200,100,80,0)).save(folder/"raw.png")
             return 0
         with patch.object(s,"run_command",side_effect=runner) as call:
@@ -97,6 +97,6 @@ class WorkflowTests(unittest.TestCase):
                 s.create_job({"nonce":"channel-4-no-key-1234","mode":"poses","source":self.ref["id"],"poses":["heart"],"channel":"4"})
     def test_invalid_channel_rejected(self):
         with self.assertRaises(ValueError):
-            s.make_plan({"mode":"poses","source":self.ref["id"],"poses":["heart"],"channel":"5"})
+            s.make_plan({"mode":"poses","source":self.ref["id"],"poses":["heart"],"channel":"6"})
 
 if __name__=="__main__":unittest.main(verbosity=2)

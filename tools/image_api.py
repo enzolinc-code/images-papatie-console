@@ -58,7 +58,7 @@ def main():
     if a.dry_run:
         print(json.dumps({'model':a.model,'size':RATIOS.get(a.size,a.size),'reference_count':len(a.image),'output':str(a.out),'network_requests':0}));return
     key=os.environ.get('CODEX_API_KEY','')
-    try:print(generate(os.environ.get('CODEX_API_URL','https://agent3.shyfai.cn'),key,a.prompt_file.read_text('utf-8'),a.image,a.out,a.model,a.size,a.quality,a.timeout))
+    try:print(generate(os.environ.get('CODEX_API_URL',''),key,a.prompt_file.read_text('utf-8'),a.image,a.out,a.model,a.size,a.quality,a.timeout))
     except Exception as exc:
         print(str(exc).replace(key,'[redacted]') if key else str(exc),file=sys.stderr);raise SystemExit(1)
 if __name__=='__main__':main()

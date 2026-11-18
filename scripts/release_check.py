@@ -19,11 +19,13 @@ def check(root=ROOT):
             content=p.read_text('utf-8')
             if re.search(r'(?:sk|sess)-[A-Za-z0-9_-]{24,}',content):problems.append(rel+': possible secret')
             if re.search(r'[CD]:[/\\](?:Users|AutoTaobao|o1key_windows_portable)',content,re.I):problems.append(rel+': machine-specific path')
-    expected={'chin','both','edge','heart','wave','cross','lean','pillow'}
-    if {p.stem for p in (root/'web/pose-art').glob('*.png')}!=expected:problems.append('Expected eight pose PNGs')
+    expected={p['id'] for p in json.loads((root/'prompts/poses24.json').read_text('utf-8'))}
+    if len(expected)!=24 or not expected.issubset({p.stem for p in (root/'web/pose-art').glob('*.png')}):problems.append('Expected 24 pose PNGs')
+    organized=json.loads((root/'prompts/papatie20.json').read_text('utf-8'))
+    if len(organized)!=20 or sum(p.get('tier')=='常用' for p in organized)!=14 or not all((root/'web/pose-art'/(p['id']+'.png')).is_file() for p in organized):problems.append('Expected 20 organized pose reference images')
     for name in ['README.md','launch.py','setup.py','config.example.json','.env.example','LICENSE','THIRD_PARTY.md','skills/papapai-studio/SKILL.md']:
         if not (root/name).is_file():problems.append('Missing '+name)
     if problems:
         print('\n'.join(problems));return 1
-    print(json.dumps({'status':'passed','publishable_files':len(files),'pose_images':8,'excluded_runtime_directories':sorted(EXCLUDED)},ensure_ascii=False));return 0
+    print(json.dumps({'status':'passed','publishable_files':len(files),'pose_images':len(expected),'organized_pose_images':len(organized),'excluded_runtime_directories':sorted(EXCLUDED)},ensure_ascii=False));return 0
 if __name__=='__main__':raise SystemExit(check())

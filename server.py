@@ -11,19 +11,21 @@ import fidelity
 import scene_outputs
 import material_marks
 import constraint_rules
+import face_orientation
 import material_trash
 import image_trash
 import quality_gate
 import auto_scene
+import image_channels
 DATA=Path(os.environ.get("PAPAPAI_DATA",str(ROOT/"data"))).resolve(); DATA.mkdir(parents=True,exist_ok=True)
-CFG={"port":8796,"endpoint":"https://agent3.shyfai.cn","model":"gpt-image-2","channel4_model":"gpt-image-2.5-cdn","timeout":600,"matting_runtime":"runtime/matting"}
+CFG={"port":8796,"endpoint":"","model":"gpt-image-2.6","channel4_model":"banana-pro","timeout":600,"matting_runtime":"runtime/matting"}
 if (ROOT/"config.json").exists():CFG.update(json.loads((ROOT/"config.json").read_text(encoding="utf-8")))
 CFG["python"]=sys.executable
 CFG["port"]=int(os.environ.get("PAPAPAI_PORT",CFG["port"]))
 CFG["matting_runtime"]=str((ROOT/CFG["matting_runtime"]).resolve())
 
 LOCK=threading.RLock(); Q=queue.Queue()
-POSES=[
+LEGACY_POSES=[
 {"id":"chin","name":"托腮垂手","hint":"单手轻托脸颊，另一前臂搭边，手腕与五指自然垂落。"},
 {"id":"both","name":"双手托腮","hint":"双肘放同一水平承托处，左右手分别轻托脸颊，头微歪，前臂呈自然V形。"},
 {"id":"edge","name":"双手搭边","hint":"双肘向两侧展开，前臂横搭同一水平边沿，双手腕朝前弯曲，十指自然垂落，头抬起，不托腮。"},
@@ -32,7 +34,10 @@ POSES=[
 {"id":"cross","name":"交叠搭臂","hint":"两条前臂放低、松弛交叠横搭在同一水平边沿，双手均在低处，不靠近脸部。上身前倾。"},
 {"id":"lean","name":"侧倾伏靠","hint":"上身轻前倾，头向一侧低倾，一手支撑太阳穴下方；另一前臂低位横放，手放松。"},
 {"id":"pillow","name":"侧枕手臂","hint":"两条前臂并排横放在同一水平位置；头低下侧倾，脸颊真实枕在前臂上。两手均保持低位，绝不抬手托腮。"}]
-POSE_MAP={p["id"]:p for p in POSES}
+POSES=json.loads((ROOT/'prompts/poses24.json').read_text('utf-8'))
+PAPATIE_POSES=json.loads((ROOT/"prompts/papatie20.json").read_text("utf-8"))
+POSE_LIBRARY=PAPATIE_POSES+[dict(p,tier="原有",image_kind="ai") for p in POSES]
+POSE_MAP={p["id"]:p for p in LEGACY_POSES+POSE_LIBRARY}
 def atomic(path,obj):
     tmp=path.with_suffix(".writing");tmp.write_text(json.dumps(obj,ensure_ascii=False,indent=2),encoding="utf-8");tmp.replace(path)
 def load(path,default):
@@ -82,22 +87,16 @@ def fidelity_status():
 def snapshot():
     with LOCK:
         marks=material_marks.read(DATA);trash=material_trash.read(DATA)
-        return {"assets":[dict(a,**marks.get(a["id"],{}),trashed=a["id"] in trash,deleted_at=trash.get(a["id"],{}).get("deleted_at"),purged=bool(trash.get(a["id"],{}).get("purged"))) for a in ASSETS.values()],"jobs":list(reversed(list(JOBS.values()))),"poses":POSES,
+        return {"assets":[dict(a,**marks.get(a["id"],{}),trashed=a["id"] in trash,deleted_at=trash.get(a["id"],{}).get("deleted_at"),purged=bool(trash.get(a["id"],{}).get("purged"))) for a in ASSETS.values()],"jobs":list(reversed(list(JOBS.values()))),"poses":POSE_LIBRARY,
                 "health":health(),"master_profiles":load(DATA/"master-profiles.json",{}),"scene_templates":fidelity_status()}
-def channel_key(channel):
-    name="CHANNEL4_API_KEY" if str(channel)=="4" else "CODEX_API_KEY"
-    if os.environ.get(name):return os.environ[name]
-    if str(channel)=="4":
-        try:
-            import winreg
-            with winreg.OpenKey(winreg.HKEY_CURRENT_USER,"Environment") as k:return winreg.QueryValueEx(k,name)[0]
-        except (OSError,ImportError):pass
-    return os.environ.get(name,"")
+def channel_key(channel):return image_channels.key(channel)
+
+def channel_model(channel):return image_channels.model(channel,CFG)
 
 def health():
-    return {"version":"papapai-studio-1.3.0","channel4":bool(channel_key("4")),"key":bool(channel_key("3")),"endpoint":CFG["endpoint"],"model":CFG["model"],
+    return {"version":"papapai-studio-1.3.0","channel4_model":channel_model("4"),"channel5_model":channel_model("5"),"channel5":bool(channel_key("5")),"channel4":bool(channel_key("4")),"key":bool(channel_key("3")),"endpoint":CFG["endpoint"],"model":CFG["model"],
             "matting":(Path(CFG["matting_runtime"])/"BiRefNet_HR-matting.onnx").is_file(),
-            "imageTool":(ROOT/"tools/image_api.py").is_file(),"root":str(ROOT),"unifiedTrash":True,"materialTrash":True,"materialMarks":True,"automaticScenes":True,"originalPoseRebuild":True,"consistencyRules":True,"handsCorrection":True,"identityLock":True,"simpleSample":True,"maskedEditing":"unverified"}
+            "imageTool":(ROOT/"tools/image_api.py").is_file(),"root":str(ROOT),"unifiedTrash":True,"materialTrash":True,"materialMarks":True,"automaticScenes":True,"faceOrientation":True,"originalPoseRebuild":True,"consistencyRules":True,"handsCorrection":True,"identityLock":True,"simpleSample":True,"maskedEditing":"unverified"}
 def pose_prompt(p,extra):
     return ("参考图是人物造型的唯一依据。制作写实上半身趴趴立牌可印刷图稿，保留同一人物面貌、发型、服装花纹、配饰及材质；"
             "按指定动作重构姿势。只要一个人物及完整双臂双手，不画下半身；只出现两只手，手指解剖自然。"
@@ -135,7 +134,7 @@ def make_plan(body):
     elif mode=="poses":
         source=body.get("source");asset_path(source)
         ids=body.get("poses",[])
-        if not isinstance(ids,list) or not 1<=len(ids)<=8 or len(set(ids))!=len(ids):raise ValueError("请选择1至8种姿势")
+        if not isinstance(ids,list) or not 1<=len(ids)<=min(60,len(POSE_MAP)) or len(set(ids))!=len(ids):raise ValueError("请选择1至"+str(min(60,len(POSE_MAP)))+"种有效姿势")
         for pid in ids:
             if pid not in POSE_MAP:raise ValueError("姿势无效")
             p=POSE_MAP[pid];tasks.append({"name":p["name"],"refs":[source],"prompt":pose_prompt(p,extra),"size":"1:1","kind":"cutout"})
@@ -178,7 +177,7 @@ def make_plan(body):
         for aid in (prior["asset"],product,scene):asset_path(aid)
         if not ASSETS[product].get("transparent"):raise ValueError("原人物透明参考图不可用")
         channel=str(body.get("channel","3"))
-        if prior.get("channel") in ("3","4") and channel!=prior["channel"]:raise ValueError("手部校正请沿用原任务通道")
+        if prior.get("channel") in ("3","4","5") and channel!=prior["channel"]:raise ValueError("手部校正请沿用原任务通道")
         prompt=("图1是需要二次校正的已生成亚克力立牌实拍场景；图2是人物动作、双手和手指结构的唯一标准透明图稿；图3是原始场景，仅供环境参考，不得恢复图3的旧人物。"
           "以图1为编辑底图，优先只修正立牌印刷人物中与图2不一致的双臂、手掌、手腕、手指和指缝。保持图2原始趴趴姿势、交叠顺序、左右手关系、每根手指的数量、关节弯曲和间距。不要新增手、融合手指、镜像或改变动作。"
           "保留图1的脸、发型、服饰、立牌位置大小角度、亚克力透明切边、侧面厚度、反光、接触阴影及实物摄影质感；保持显示器、屏幕内容、背景、桌面物品、机位与光照。不要把立牌变成真人或去掉亚克力材质。"
@@ -253,20 +252,33 @@ def make_plan(body):
                     task['refs'].append(identity);task['prompt']+='\n图3为固定身份母版，人物为'+person+'。面貌以图3为准，衣服与动作以图2为准，身份母版的姿势不可覆盖动作母版。'
     for task in tasks:
         if task.get('prompt'):task['prompt']=constraint_rules.apply(mode,task['prompt'])
+    face_orientation.apply(tasks,body,asset_path)
     if not 1<=len(tasks)<=60:raise ValueError("每批最多60张，请减少选择")
     channel=str(body.get("channel","3"))
-    if channel not in ("3","4"):raise ValueError("请选择通道3或4")
+    if channel not in ("3","4","5"):raise ValueError("请选择通道3、4或5")
     for task in tasks:
         task["channel"]="local" if task["kind"]=="fidelity" and not task.get("automatic") else channel
-        task["model"]=None if task["kind"]=="fidelity" else (CFG["channel4_model"] if channel=="4" else CFG["model"])
+        frozen=task.get("model") if mode=="continue_sample" else (prior.get("model") if mode in ("correct_hands","correct_identity","correct_material","redo_scene") else None)
+        task["model"]=None if task["kind"]=="fidelity" else (frozen or channel_model(channel))
     return tasks[:1] if mode=="scenes" and body.get("sample_first") else tasks
 def environment(channel="3"):
     env=dict(os.environ)
-    env["CODEX_API_URL"]=CFG.get("channel4_endpoint",CFG["endpoint"]) if channel=="4" else CFG["endpoint"]
-    env["CODEX_API_KEY"]=channel_key(channel)
+    env["CODEX_API_URL"]=image_channels.endpoint(channel if channel in image_channels.SUPPORTED else "3",CFG)
+    if channel in ("3","4"):env["CODEX_API_KEY"]=channel_key(channel)
+    if channel=="4":
+        env["CHANNEL4_API_KEY"]=channel_key(channel);env["CHANNEL4_API_URL"]=image_channels.endpoint(channel,CFG)
+        for name in ("CHANNEL4_PROXY","CHANNEL4_RESOLUTION"):
+            value=image_channels.user_env(name)
+            if value:env[name]=value
+    if channel=="5":
+        env["IMG4_API_KEY"]=channel_key(channel);env["IMG4_API_URL"]=image_channels.endpoint(channel,CFG)
+        for name in ("IMG4_PROXY","IMG4_RESOLUTION","IMG4_VERSION"):
+            value=image_channels.user_env(name)
+            if value:env[name]=value
     env["TMP"]=str(DATA);env["TEMP"]=str(DATA)
     env["PYTHONDONTWRITEBYTECODE"]="1";env["PYTHONIOENCODING"]="utf-8"
     return env
+
 def run_command(cmd,folder,timeout,channel="3"):
     try:
         r=subprocess.run(cmd,capture_output=True,encoding="utf-8",errors="replace",env=environment(channel),timeout=timeout,
@@ -282,13 +294,24 @@ def generate(t,folder):
     raw=folder/"raw.png"
     if raw.exists():return raw
     prompt=folder/"prompt.txt";prompt.write_text(t["prompt"],encoding="utf-8")
-    cmd=[CFG["python"],"-X","utf8",str(ROOT/"tools/image_api.py"),"--prompt-file",str(prompt),
-         "--out",str(raw),"--tmp-dir",str(folder),"--output-dir",str(folder),"--size",t["size"],"--n","1","--format","png","--model",t.get("model",(CFG["channel4_model"] if t.get("channel")=="4" else CFG["model"]))]
+    channel=t.get("channel","3");model=t.get("model") or channel_model(channel)
+    if channel=="4" and model.startswith("banana"):
+        cmd=[CFG["python"],"-X","utf8",str(ROOT/"tools/xingqi_bridge.py"),"--prompt-file",str(prompt),"--out",str(raw),"--size",t["size"],"--model",model,"--timeout",str(CFG["timeout"])]
+    elif channel=="5":
+        cmd=[CFG["python"],"-X","utf8",str(ROOT/"tools/apimart_bridge.py"),"--prompt-file",str(prompt),"--out",str(raw),"--size",t["size"],"--model",model,"--timeout",str(CFG["timeout"])]
+    else:
+        cmd=[CFG["python"],"-X","utf8",str(ROOT/"tools/image_api.py"),"--prompt-file",str(prompt),"--out",str(raw),"--tmp-dir",str(folder),"--output-dir",str(folder),"--size",t["size"],"--n","1","--format","png","--model",model]
     for ref in t["refs"]:cmd+=["--image",str(asset_path(ref))]
-    code=run_command(cmd,folder,int(CFG["timeout"]),t.get("channel","3"))
+    code=run_command(cmd,folder,int(CFG["timeout"]),channel)
     if code!=0 or not raw.exists():
+        receipt=folder/("channel"+channel+"-task.json")
+        if channel in ("4","5") and receipt.exists():
+            try:diagnostic=load(receipt,{})
+            except (OSError,ValueError):diagnostic={}
+            if diagnostic.get("phase")=="rejected":raise image_channels.ChannelUnavailable(diagnostic.get("error") or "通道5请求被拒绝，请检查账号配置")
         raise RuntimeError("所选通道未取得成图，状态需核实；请先核对远端任务与费用，不自动重试。")
     return raw
+
 def transparent(raw,folder):
     with Image.open(raw) as src:
         im=src.convert("RGBA");im.load()
@@ -365,7 +388,7 @@ def automatic_scene(task,folder,phase):
             guide=cache/'cleanup-guide.png';auto_scene.guide(scene,mask,guide)
             with LOCK:a=register(guide.read_bytes(),'自动清理区域参考.png','mask_guide')
             channel=task.get('channel','3')
-            background={'refs':[task['scene'],a['id']],'channel':channel,'model':CFG['channel4_model'] if channel=='4' else CFG['model'],'size':task['size'],
+            background={'refs':[task['scene'],a['id']],'channel':channel,'model':task.get('model') or channel_model(channel),'size':task['size'],
               'prompt':'图1是实物拍摄场景原图，图2红色区域是系统识别出的旧亚克力立牌。完整移除红色范围内旧人物、旧立牌透明白边和旧接触阴影，补全后面的显示器、墙面、桌面。只恢复干净背景，不添加任何新人物或新立牌，不改变机位、屏幕边框、屏幕内容和红色范围之外的物品。保持原始光照、照片颗粒和透视。不要红色蒙版残留。'}
             atomic(meta,background)
         if background.get('channel')!=task.get('channel','3'):raise ValueError('此场景已有其他通道清理记录，请先核实该次结果，不自动换通道重试')
@@ -450,7 +473,11 @@ def worker():
                 except Exception as exc:
                     with LOCK:
                         uncertain=isinstance(exc,RuntimeError)
-                        t.update(status="uncertain" if uncertain else "failed",message=str(exc)[:250]);save(j)
+                        t.update(status="uncertain" if uncertain else "failed",message=str(exc)[:250])
+                        if getattr(exc,"stop_batch",False):
+                            for remaining in j["tasks"][idx+1:]:
+                                if remaining["status"]=="pending":remaining.update(status="cancelled",message="同批通道请求被拒绝，未继续提交")
+                        save(j)
             with LOCK:
                 statuses=[t["status"] for t in j["tasks"]]
                 j["status"]="done" if all(s=="done" for s in statuses) else "partial"
@@ -468,6 +495,7 @@ def create_job(body):
         tasks=make_plan(body)
         remaining=make_plan(dict(body,sample_first=False))[1:] if body.get('mode')=='scenes' and body.get('sample_first') else []
         if planned_calls(tasks)>0 and not channel_key(str(body.get("channel","3"))):raise ValueError("所选通道未配置密钥，请检查对应环境变量")
+        if planned_calls(tasks)>0:image_channels.preflight(str(body.get("channel","3")),CFG)
         jid=uuid4().hex
         folder=DATA/"jobs"/jid;folder.mkdir(parents=True)
         j={"id":jid,"nonce":nonce,"mode":body["mode"],"created":time.time(),"status":"queued","stop":False,

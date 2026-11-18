@@ -1,9 +1,11 @@
 {
   "port": 8796,
-  "endpoint": "https://agent3.shyfai.cn",
-  "model": "gpt-image-2",
-  "channel4_endpoint": "https://agent3.shyfai.cn",
-  "channel4_model": "gpt-image-2.5-cdn",
+  "endpoint": "",
+  "model": "gpt-image-2.6",
+  "channel4_endpoint": "",
+  "channel4_model": "banana-pro",
   "timeout": 600,
-  "matting_runtime": "runtime/matting"
+  "matting_runtime": "runtime/matting",
+  "channel5_model": "gemini-nano-banana-2.1",
+  "channel5_endpoint": ""
 }

@@ -1,76 +1,517 @@
 {
-  ".env.example": "51442e87a27529d9e6776836b91cd8ee250949cc9f43fa0d001929ce5fac5d3f",
-  ".github/workflows/tests.yml": "00bde5a5c8f328ff0533a2be008dfb6329db72397b995616071d50086478a01a",
-  ".gitignore": "79eb4af9782c5eafb2db88c44fd7fa9ff8eadd3676f0d177839f393ec7131a97",
-  "acrylic.py": "62d6901582310f095fda8460f1ec1258c3283c82992b9f4f0596912e9cd62d2c",
-  "auto_scene.py": "65d0d1527ae8545f49eb3ad05648c271d7be2c3ffc8dd9c8ff4c3867fd33c7f1",
-  "config.example.json": "63bfb5e0f99714399ebd7f9eb248cb633f0ff6400330dbdb78f187f9e7ddc598",
-  "constraint_rules.py": "196b6b76460fc47a760c295bdd6837e3c3c93ac05a38e9cf085d5d4eaba6766c",
-  "docs/poses-preview.jpg": "cfdb5ba95a25da043d1d2629ef2412077d73b761c733498bcd7de900445b3dbf",
-  "fidelity.py": "9a0501109c3865bab52b94b35a8bf0dd30aa8290591e7608aa90ae0c07e769a4",
-  "image_trash.py": "9c1e86d88c07820dd104463f0b5d7b8fe7bd9aeb00515697927a1fc1318f2ac9",
-  "integrations/xhs-folder-handoff.js": "af276525afaf0906836cc1d5bdd0348e920c38b278888f795f0b55e79a1f2da7",
-  "launch.py": "2c725979d2c006276d0277217e47ab25dd2eb59bc8a1bbbad0365a6f3b055220",
-  "LICENSE": "e2a05b79eba78bceaeceb51b4f1dceff7c6f0bb038e744b2a9db5877aee62202",
-  "material_bridge.py": "8efb937d1c8f9a45b90af09125e788746a3a0e8a1cf5edc8e053f087fa48b931",
-  "material_marks.py": "702eb7297161e64b703591574baab0834c50f4563f11fa6a310bc2794c7eced7",
-  "material_trash.py": "54d5efa1842b1228b9fddd2d9010bac090c5d6d3dba060c1d4d2f4d9748571d2",
-  "prompts/lock-requirements.txt": "70cf7ee34c298d101aab71df0b35361c238152e39056fe202054ae4791098907",
-  "quality_gate.py": "67b19967da49a7eed224430a5a90e3222e00b96b7fa1745b60752a0575fb4da8",
-  "README.md": "9b3c4380fd141b59a724c23024a8a7df3815b2632ad889e124801c5f9b5127ae",
-  "requirements-matting.txt": "9a6a2e8cc6b2dc1bc3be07717b32ba58bcd64fb4c24711ca43d2ab164e9bb369",
-  "requirements.txt": "0cb612ba53c8d8a5e083545b9cf1cb78ed3acb87ef54b619e2eed468b9b3d15d",
-  "scene_outputs.py": "514241f0e4d677314aa04b7945999fe9d33c7f2bf0edd244262481176a0589ae",
-  "scripts/release_check.py": "1a2eb135a1745e7842f7711cc865294a74241863df3b4a2e860954009a9a4683",
-  "server.py": "afb3350fe60174736db4049bc9b50c58d71b9edd4b4de305c27d88a57957611e",
-  "setup.py": "bcda85b59cb23eeef4bee2ff6cbd1ae4b5fa7b89ac7637d296098fe119dd7e61",
-  "skills/papapai-studio/agents/openai.yaml": "9b80fccc2a811c8249ba18282717e49777a11391b5ac0e383a3a7057e8298322",
-  "skills/papapai-studio/references/pose-prompts.json": "7198e8b651939c264da9b09ddcbb2ec04ba5c5a38c0bd4abd42ef9e6dab9d05e",
-  "skills/papapai-studio/SKILL.md": "0ca1b969843abce170997253a80a17bc7652129e1399f281b2d61d8099079380",
-  "test_acrylic.py": "ae0ddd25423431035b1e18a33298349fa749f83c861e322c1b1a6dde73ec6320",
-  "test_auto_scene.py": "3b7c5874b5b0fc60c59be11947a79f78faa6b3eacf470f281799e14e8bf69837",
-  "test_constraint_rules.py": "282ba7d4b204ad56d6c4752410a8ded6cdda26a728ea125187f05b0296e28038",
-  "test_fidelity.py": "9de52f899ff0185204a36043c704ac0c757dd37d3a3e20c655de8512ca8cd5f9",
-  "test_gallery.py": "0300fd97940470c9dc02106e56656d850f3759638c0662d8adbabb9ae46d8e9c",
-  "test_identity_gate.py": "f655c12e835fcb18716c59cc2d33336a56c99d5d99fa241855f8fe28fea7c261",
-  "test_image_api.py": "ff1f9172fe39d29996b8adc6a37fd12ee80d95c6dd7a1b692482c42daf28de60",
-  "test_material_bridge.py": "a5823434436697e89005454401ea123b2d84068afa098c0f514d77d6fa5a9270",
-  "test_material_marks.py": "2d3e0db43bbe628c00cc04ea70f08b0203e753304155aa5a61a0c38c37f4645d",
-  "test_material_trash.py": "85d5f46f8f5ed0089f0ec8e8a075e572d447be34f07c533194f8328ed0efcc04",
-  "test_original_pose.py": "cbf3f0db0f8d8266cc79fc33226e5ae4e38aa820a004ff6c0f411abc3b8b28bc",
-  "test_sample_flow.py": "f56258a7f79bcae2db3d2c83dfb0e6bd08ac04dbd0b2a4134b908642aca2fcd4",
-  "test_scene_outputs.py": "09ff3b0d66aaf15b0c51aaa524095b31da0e81bd11e40fedea3cf193393f84d4",
-  "test_simple_scenes.py": "431f8cbfb3cd28697842f725c032e44f7e78bc6c80669568dbb385a9023021bc",
-  "test_unified_trash.py": "2ebc4aede04d947f12f194b3c51965b74c8a167f700cc75c3a74965719369661",
-  "test_workflow.py": "acfe992938c87219184e3e97376dcc3b03cbdda806558dcb16f80f9aed202054",
-  "THIRD_PARTY.md": "fe422063f4981614a38ec36d5a69e48cbbb8ec3caf0f7a351b7b5ebc31784c5a",
-  "tools/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "tools/cutout.py": "74ffcf6e0090b87ff264b602e336162dce99bf82f8f6d11b92546e3c28d9ad1f",
-  "tools/image_api.py": "5f5f1820ceaf7f6f416ac8a982013378e5d769336b7e599a63a65118948a0ee2",
-  "web/app.js": "acd2a757bea43533d450a71a667369505f41d344652db97e74749564d78b5335",
-  "web/constraint-rules.js": "66b62b3e9557684885b1850d83c78708654e85c0264dc1310a45df72fd625d91",
-  "web/fidelity.js": "f1a2d8f769c076b390b4c6deaa3c595b60de2182cb31be46c288d71042673ed5",
-  "web/gallery.js": "2a59214a139be68f5940bb7165d23177ac70047f337e5bc6b3e5f0ed3e689f8a",
-  "web/hands-correction.js": "01f5d06975a1978d02c919fd25eddd688ac3c39af6ca4d7f00130efa06260265",
-  "web/identity-screening.js": "d7c4e86a058faf66446f9a8ad579cf1ee3f3f5b75d4cb55eda69c61026d1d7ca",
-  "web/index.html": "6cdfaa074a64fb6c64c5d83b262aa7a7ca1db874ebafb1b30e0d1ac74c206b41",
-  "web/library.js": "977522469ddccdaf2d556f1f659df64838d97447ee1f2ca04d74e6d34159aa83",
-  "web/material-delete.js": "c3437466393fbf90937c71f81392a9f77c7cfa1ebd2a615ad47bfe017e78ea85",
-  "web/materials.js": "497fc2a3159f479294dc15bb457489a38ab1c30135e87c90598c482e158c1829",
-  "web/pose-art/both.png": "7fc6888fccdc3e1e8d4fc37844170dd842709873294452e225e9f23dc6cfbf88",
-  "web/pose-art/chin.png": "c18f1e7c6301c4982686d6e155895d98c71b560d71563121f6b1afa1b8771610",
-  "web/pose-art/cross.png": "8e6f1526094608f47d25ace2f42a4b35332942c22ba5fd273066668d0cd7560f",
-  "web/pose-art/edge.png": "d6b2a5b716c1493f347eecfedc0675a758ea1a2a9b93b82dfce316986b420354",
-  "web/pose-art/heart.png": "3fa829b4f5919fd9ad1d7803c605aaf4bb582eaf7f887f7d9fc6e5ff507a8f7d",
-  "web/pose-art/lean.png": "55c1d8a5e287f20131a4dc4cd5ef80077f4ec54207bef66c1243f1d2a4139855",
-  "web/pose-art/pillow.png": "e41ea551f1f9c4ef9d7c6e26cc5d70d1a53a5ad203d0d40962c62f4c8f794020",
-  "web/pose-art/wave.png": "293a8346677a8f9d584372589919ec9121fb4cd90a1036d4fe0942f3dbbf5de2",
-  "web/poses.js": "567aaa9c91f0cb664a32f85cba557aa36c1a48e2e36da8b6da3e3445cdc0a237",
-  "web/simple-fidelity.js": "52c7aaf70632623653cc08ecba75b6660a257f648bc05e069e3626effc7c2299",
-  "web/simple-sample.js": "a1e744256a4297420d656e294ae6b793d9995c5f1c5cd98a38d2ad7ee604d2c3",
-  "web/studio.js": "f69eb67777ddba592ef9714ee50a5a74ea453743acc0f9f68790bf2b5c2fb3ed",
-  "web/style.css": "8ec2c09821af7a45c74e1f2c07d5679cdc127885466c06e43f3300fcc365f9c2",
-  "web/unified-delete.js": "7fc3d9c430e66ac057624ff0bddd68cd8d68a3bd41739d8553aaf0b6be46814d",
-  "启动工作台.vbs": "216062b2d8124f26502998cd773dd386e70acaa77a4d7264e858c725c67b7e8d",
-  "安装.cmd": "57e3fe4a4f022add15097191c5a2c6d447a24ae4ad1af0d40756163f677b6260"
+  "version": "2026-11-18",
+  "files": [
+    {
+      "path": ".env.example",
+      "sha256": "7a5d9d9bd45b8c5d04f6c9c73955408f2b1b19c4f3a78f161a98d69beeae99b2"
+    },
+    {
+      "path": ".github/workflows/tests.yml",
+      "sha256": "00bde5a5c8f328ff0533a2be008dfb6329db72397b995616071d50086478a01a"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "79eb4af9782c5eafb2db88c44fd7fa9ff8eadd3676f0d177839f393ec7131a97"
+    },
+    {
+      "path": "acrylic.py",
+      "sha256": "547e0c32cabc38b08c742e1a493889182a7a803a945698b164aafff648fc878e"
+    },
+    {
+      "path": "auto_scene.py",
+      "sha256": "65d0d1527ae8545f49eb3ad05648c271d7be2c3ffc8dd9c8ff4c3867fd33c7f1"
+    },
+    {
+      "path": "config.example.json",
+      "sha256": "9a85c6e702bf7205bad62ca87f30bab758438550e2693165ac52b24e5554ebd6"
+    },
+    {
+      "path": "constraint_rules.py",
+      "sha256": "196b6b76460fc47a760c295bdd6837e3c3c93ac05a38e9cf085d5d4eaba6766c"
+    },
+    {
+      "path": "docs/poses-preview.jpg",
+      "sha256": "cfdb5ba95a25da043d1d2629ef2412077d73b761c733498bcd7de900445b3dbf"
+    },
+    {
+      "path": "face_orientation.py",
+      "sha256": "0edcf4a1c5b094743373df5a4de4cbbc6d861e42567dfb4656b42440c34e7af2"
+    },
+    {
+      "path": "fidelity.py",
+      "sha256": "9a0501109c3865bab52b94b35a8bf0dd30aa8290591e7608aa90ae0c07e769a4"
+    },
+    {
+      "path": "image_channels.py",
+      "sha256": "18469d42fa3b41cbe71fbbc1ea46fe537f4daf110e0bd8777ce6541ca8e89f77"
+    },
+    {
+      "path": "image_trash.py",
+      "sha256": "9c1e86d88c07820dd104463f0b5d7b8fe7bd9aeb00515697927a1fc1318f2ac9"
+    },
+    {
+      "path": "integrations/xhs-folder-handoff.js",
+      "sha256": "af276525afaf0906836cc1d5bdd0348e920c38b278888f795f0b55e79a1f2da7"
+    },
+    {
+      "path": "launch.py",
+      "sha256": "2c725979d2c006276d0277217e47ab25dd2eb59bc8a1bbbad0365a6f3b055220"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "e2a05b79eba78bceaeceb51b4f1dceff7c6f0bb038e744b2a9db5877aee62202"
+    },
+    {
+      "path": "material_bridge.py",
+      "sha256": "8efb937d1c8f9a45b90af09125e788746a3a0e8a1cf5edc8e053f087fa48b931"
+    },
+    {
+      "path": "material_marks.py",
+      "sha256": "702eb7297161e64b703591574baab0834c50f4563f11fa6a310bc2794c7eced7"
+    },
+    {
+      "path": "material_trash.py",
+      "sha256": "4e141d498f9ea29a1a8f02e1982fe50d6f7118ded683774419b628e4ced5c06d"
+    },
+    {
+      "path": "prompts/lock-requirements.txt",
+      "sha256": "70cf7ee34c298d101aab71df0b35361c238152e39056fe202054ae4791098907"
+    },
+    {
+      "path": "prompts/papatie20.json",
+      "sha256": "e8c5a2eeef234db56440d91f1217e0ddb21288e7637c24c202a64f4b29db4a09"
+    },
+    {
+      "path": "prompts/poses24.json",
+      "sha256": "2ca964c071c430e88ba4b6af2681a24ca28a8c441ec93eebc9a1398f5eaa2a48"
+    },
+    {
+      "path": "quality_gate.py",
+      "sha256": "4b8f2902a72623767c31ef7f37c3f4a6ec46cde70bb25c29c29b6e4083f0aadf"
+    },
+    {
+      "path": "README.md",
+      "sha256": "5f387b02defc13ee1f346eda70050e623121fb43cec32ca71bc9f65b6689a0cf"
+    },
+    {
+      "path": "requirements-matting.txt",
+      "sha256": "9a6a2e8cc6b2dc1bc3be07717b32ba58bcd64fb4c24711ca43d2ab164e9bb369"
+    },
+    {
+      "path": "requirements.txt",
+      "sha256": "0cb612ba53c8d8a5e083545b9cf1cb78ed3acb87ef54b619e2eed468b9b3d15d"
+    },
+    {
+      "path": "scene_outputs.py",
+      "sha256": "514241f0e4d677314aa04b7945999fe9d33c7f2bf0edd244262481176a0589ae"
+    },
+    {
+      "path": "scripts/release_check.py",
+      "sha256": "13d089ce5d60bf4d1a6d19894f052ec3ec1a9d5d018745978ed36a1c58989401"
+    },
+    {
+      "path": "server.py",
+      "sha256": "269a1e456619ec61ca33526ad68c067def11312b48618551b9b74bcb0b4652aa"
+    },
+    {
+      "path": "setup.py",
+      "sha256": "bcda85b59cb23eeef4bee2ff6cbd1ae4b5fa7b89ac7637d296098fe119dd7e61"
+    },
+    {
+      "path": "skills/papapai-studio/agents/openai.yaml",
+      "sha256": "9b80fccc2a811c8249ba18282717e49777a11391b5ac0e383a3a7057e8298322"
+    },
+    {
+      "path": "skills/papapai-studio/references/pose-prompts.json",
+      "sha256": "7198e8b651939c264da9b09ddcbb2ec04ba5c5a38c0bd4abd42ef9e6dab9d05e"
+    },
+    {
+      "path": "skills/papapai-studio/SKILL.md",
+      "sha256": "0ca1b969843abce170997253a80a17bc7652129e1399f281b2d61d8099079380"
+    },
+    {
+      "path": "test_acrylic.py",
+      "sha256": "596e6c2c696aeed965d00e408cea5b26c7c68e58453afdbefe1350ae985de8cd"
+    },
+    {
+      "path": "test_auto_scene.py",
+      "sha256": "3b7c5874b5b0fc60c59be11947a79f78faa6b3eacf470f281799e14e8bf69837"
+    },
+    {
+      "path": "test_constraint_rules.py",
+      "sha256": "372b125c84da46983ba0c9226b8d8cb6df7f54133dd5f7840350186f0b106c8a"
+    },
+    {
+      "path": "test_face_orientation.py",
+      "sha256": "b7af69e1e365f938df199358a659f6842a77f32e5cd69660b9077c8d48ba3d72"
+    },
+    {
+      "path": "test_fidelity.py",
+      "sha256": "9de52f899ff0185204a36043c704ac0c757dd37d3a3e20c655de8512ca8cd5f9"
+    },
+    {
+      "path": "test_gallery.py",
+      "sha256": "0300fd97940470c9dc02106e56656d850f3759638c0662d8adbabb9ae46d8e9c"
+    },
+    {
+      "path": "test_identity_gate.py",
+      "sha256": "f655c12e835fcb18716c59cc2d33336a56c99d5d99fa241855f8fe28fea7c261"
+    },
+    {
+      "path": "test_image_api.py",
+      "sha256": "ff1f9172fe39d29996b8adc6a37fd12ee80d95c6dd7a1b692482c42daf28de60"
+    },
+    {
+      "path": "test_image_channels.py",
+      "sha256": "98e49a40366d8417fc37ed9a8e3428453f821f2dec9788352fcfce22333706de"
+    },
+    {
+      "path": "test_material_bridge.py",
+      "sha256": "8104f446c018d5c42d1074d90b8a7dd7d6895f7e737813297e22fa36789b6e15"
+    },
+    {
+      "path": "test_material_marks.py",
+      "sha256": "1739d0de13675b1eb4812627ec67f8f326f6ca4c728b2faa45baa5e8c10bd015"
+    },
+    {
+      "path": "test_material_trash.py",
+      "sha256": "d9192634ace960881331be81a8ded9791076ff0b3bc466254713709013fc4524"
+    },
+    {
+      "path": "test_original_pose.py",
+      "sha256": "cbf3f0db0f8d8266cc79fc33226e5ae4e38aa820a004ff6c0f411abc3b8b28bc"
+    },
+    {
+      "path": "test_papatie20.py",
+      "sha256": "67c4a9b18dd53f6c1a5763aa659457592c1b8ddd8a22c512447aae2ae7b48752"
+    },
+    {
+      "path": "test_pose_catalog24.py",
+      "sha256": "23ac9830dc1fa2ff1cbdddbce473fe27af373bafa0e8dc17bac6dadc47e58507"
+    },
+    {
+      "path": "test_sample_flow.py",
+      "sha256": "874d6c69234afff31a79c5a68651e9baae0ed7cb4d7c8edb65cd09f1a8645df3"
+    },
+    {
+      "path": "test_scene_outputs.py",
+      "sha256": "09ff3b0d66aaf15b0c51aaa524095b31da0e81bd11e40fedea3cf193393f84d4"
+    },
+    {
+      "path": "test_simple_scenes.py",
+      "sha256": "431f8cbfb3cd28697842f725c032e44f7e78bc6c80669568dbb385a9023021bc"
+    },
+    {
+      "path": "test_unified_trash.py",
+      "sha256": "8c4cbd460efcd84f7acbd6cd2349ea5dd253646a13e61185e9ed125e740f5183"
+    },
+    {
+      "path": "test_workflow.py",
+      "sha256": "d75296a1a3ce8a04778f50772f82e8f9fac41bb1e41a93a6bcaa971d2d5d08ee"
+    },
+    {
+      "path": "THIRD_PARTY.md",
+      "sha256": "fe422063f4981614a38ec36d5a69e48cbbb8ec3caf0f7a351b7b5ebc31784c5a"
+    },
+    {
+      "path": "tools/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tools/apimart_bridge.py",
+      "sha256": "00e15ff898d1f5c9d8148b36a74126b0b4b361e0aaa967096dcbd1c9a65ac3f1"
+    },
+    {
+      "path": "tools/cutout.py",
+      "sha256": "74ffcf6e0090b87ff264b602e336162dce99bf82f8f6d11b92546e3c28d9ad1f"
+    },
+    {
+      "path": "tools/image_api.py",
+      "sha256": "f29ea62377f9a12996890af2f8f0171604eeb13e40ea7be16d3ba962d9c95ac7"
+    },
+    {
+      "path": "tools/xingqi_bridge.py",
+      "sha256": "31c73b1b4564b443d9c35132c3a8d718cba384c3672c0d30577a1e3663680c3f"
+    },
+    {
+      "path": "web/app.js",
+      "sha256": "d9dba0ab8b2e79cc04af3c013d4a7c034fb6c965d2cc0c24a4fc08bac39c6a0a"
+    },
+    {
+      "path": "web/constraint-rules.js",
+      "sha256": "66b62b3e9557684885b1850d83c78708654e85c0264dc1310a45df72fd625d91"
+    },
+    {
+      "path": "web/fidelity.js",
+      "sha256": "f1a2d8f769c076b390b4c6deaa3c595b60de2182cb31be46c288d71042673ed5"
+    },
+    {
+      "path": "web/gallery.js",
+      "sha256": "2a59214a139be68f5940bb7165d23177ac70047f337e5bc6b3e5f0ed3e689f8a"
+    },
+    {
+      "path": "web/hands-correction.js",
+      "sha256": "3fed789e4071f7d183f5710695ae996155dd3377f027ae89e0a1c02d0b411b61"
+    },
+    {
+      "path": "web/identity-screening.js",
+      "sha256": "d7c4e86a058faf66446f9a8ad579cf1ee3f3f5b75d4cb55eda69c61026d1d7ca"
+    },
+    {
+      "path": "web/index.html",
+      "sha256": "42380a8b0d6ff8b95d61e1216d46f3dbf88bda6766e327b9f8bdf65656c0ec55"
+    },
+    {
+      "path": "web/library.js",
+      "sha256": "68d41e7c9f8e62723d2fb0b9104bde7962c9e542353327a0a13b63a1b1b4f077"
+    },
+    {
+      "path": "web/material-delete.js",
+      "sha256": "c3437466393fbf90937c71f81392a9f77c7cfa1ebd2a615ad47bfe017e78ea85"
+    },
+    {
+      "path": "web/materials.js",
+      "sha256": "d3a30beb946997353e559e37e7bf6fb923760fa000b0c919d5f83dfb7ee85208"
+    },
+    {
+      "path": "web/pose-art/both.png",
+      "sha256": "7fc6888fccdc3e1e8d4fc37844170dd842709873294452e225e9f23dc6cfbf88"
+    },
+    {
+      "path": "web/pose-art/chin.png",
+      "sha256": "c18f1e7c6301c4982686d6e155895d98c71b560d71563121f6b1afa1b8771610"
+    },
+    {
+      "path": "web/pose-art/cross.png",
+      "sha256": "8e6f1526094608f47d25ace2f42a4b35332942c22ba5fd273066668d0cd7560f"
+    },
+    {
+      "path": "web/pose-art/edge.png",
+      "sha256": "d6b2a5b716c1493f347eecfedc0675a758ea1a2a9b93b82dfce316986b420354"
+    },
+    {
+      "path": "web/pose-art/heart.png",
+      "sha256": "3fa829b4f5919fd9ad1d7803c605aaf4bb582eaf7f887f7d9fc6e5ff507a8f7d"
+    },
+    {
+      "path": "web/pose-art/lean.png",
+      "sha256": "55c1d8a5e287f20131a4dc4cd5ef80077f4ec54207bef66c1243f1d2a4139855"
+    },
+    {
+      "path": "web/pose-art/p01.png",
+      "sha256": "4bd167907c32f65739a8276e1be76911d4fb95466e425138a4e46dd66cbbebfd"
+    },
+    {
+      "path": "web/pose-art/p02.png",
+      "sha256": "d279e57271310a9d3bfce7236655ece5f151b82e9e35cd17e7683646b1bdd720"
+    },
+    {
+      "path": "web/pose-art/p03.png",
+      "sha256": "e2b0feab981fa67a4dc72167b76da11fda4e1e85397ca84bf78d4e0aa20d0251"
+    },
+    {
+      "path": "web/pose-art/p04.png",
+      "sha256": "dbf2cda031e485e6b5271facc84670e9c75636ee96d057c91255af233f487159"
+    },
+    {
+      "path": "web/pose-art/p05.png",
+      "sha256": "34a8a7a008761445e204f1e4715342c9e2e39bda1f9829b489ffe9797c8bbe52"
+    },
+    {
+      "path": "web/pose-art/p06.png",
+      "sha256": "d9ca59133f4854c53c8d815b87b88f5ee415ebd3c05c37c1907502e3de3d0749"
+    },
+    {
+      "path": "web/pose-art/p07.png",
+      "sha256": "cc010d8dc1ae7d6eeb8917fb5178096e9842451f531abb5927cd56789b13ed60"
+    },
+    {
+      "path": "web/pose-art/p08.png",
+      "sha256": "0d9925bdf9e4f772c6614a1cc081232eadb567d3d1390a0711e43eb80f201ae2"
+    },
+    {
+      "path": "web/pose-art/p09.png",
+      "sha256": "7aac3fcb21babd956967243841f6df93f7f11cd3292ad707d0796c674e9e6d97"
+    },
+    {
+      "path": "web/pose-art/p10.png",
+      "sha256": "65cae57343c460d093456ada33a18cd3c2bd44fc4a43159ebd016be387e6d484"
+    },
+    {
+      "path": "web/pose-art/p11.png",
+      "sha256": "0d9a6a8a729ef97bbe82bdfe66f0e6a29a64d3c14dfdd0b0bf448cebc1912c55"
+    },
+    {
+      "path": "web/pose-art/p12.png",
+      "sha256": "31d7f5af2ea2ab512b8e0e8da5d13be3be6554be01daceec3b2255ccca9414db"
+    },
+    {
+      "path": "web/pose-art/p13.png",
+      "sha256": "e361406c710de4e682c624eb57591d2b898977e0c949a1a34216b78611e5a7ea"
+    },
+    {
+      "path": "web/pose-art/p14.png",
+      "sha256": "269e9e71e5598cfa6ecdbef5bdfdbf60b0cc0aba7c4b52fb62bccef7cf54909b"
+    },
+    {
+      "path": "web/pose-art/p15.png",
+      "sha256": "6013d969b51d0da521f4e14eed4851e9118bb863ff30dc87d8cdc8e9cec72688"
+    },
+    {
+      "path": "web/pose-art/p16.png",
+      "sha256": "718ab07ceff75bc21aac5d8b18d6ecc0ea8beb908c0cb334e538d5f87bb86809"
+    },
+    {
+      "path": "web/pose-art/p17.png",
+      "sha256": "c0a5ef385ac3eb283ac197dd210b5913ff2b40be9966e13d523888b49a0dbde2"
+    },
+    {
+      "path": "web/pose-art/p18.png",
+      "sha256": "5e4c78bbc0fa7e739e586dde041ebcf2e4013b1d4f71a574f3e1d5e68c47b918"
+    },
+    {
+      "path": "web/pose-art/p19.png",
+      "sha256": "15d8395140ae42b5630265fa8e12b6d4cfc3b2bb5462e45116420347fb4d6736"
+    },
+    {
+      "path": "web/pose-art/p20.png",
+      "sha256": "8cfcb5898b52010c1d39db20c57e8e1e54e496df8d0502a26c774de8ecb7f64c"
+    },
+    {
+      "path": "web/pose-art/p21.png",
+      "sha256": "aacda9ebe434e1b2053a985a466982d0860639e3326c225ee54929434fb7c6c7"
+    },
+    {
+      "path": "web/pose-art/p22.png",
+      "sha256": "c71b0c1ed8ace56f671d61a98fb701871ec6aa2c88f49b4d33bc58b7b9db2a7a"
+    },
+    {
+      "path": "web/pose-art/p23.png",
+      "sha256": "fd1989dd8e77d1bdaf5abc1bc26da592cfbc2f4952dbed01a59c0b9b1a7223ef"
+    },
+    {
+      "path": "web/pose-art/p24.png",
+      "sha256": "6fdca4fde156c09c0b86102427483d57dec26df38566a81dd24ac3b6513a56c7"
+    },
+    {
+      "path": "web/pose-art/pillow.png",
+      "sha256": "e41ea551f1f9c4ef9d7c6e26cc5d70d1a53a5ad203d0d40962c62f4c8f794020"
+    },
+    {
+      "path": "web/pose-art/pp_A01.png",
+      "sha256": "0faf6076f7b8ae5b7b7f0527d39e3de1ccd096114113cab15fe9239729776ee1"
+    },
+    {
+      "path": "web/pose-art/pp_A02.png",
+      "sha256": "61ceeb7a49aa362ea1f1455f68478242c523268781dd838d9e46fbfe0c84720d"
+    },
+    {
+      "path": "web/pose-art/pp_A03.png",
+      "sha256": "bc9089995627f99a7297a2c772d78d6c7c07e8a134440b420dc62b9b399582ba"
+    },
+    {
+      "path": "web/pose-art/pp_A04.png",
+      "sha256": "3ce0c89b8003c6ab4c4fb8d0cf61ca6d662aa33d3cd9de93cec7ac27f97aea19"
+    },
+    {
+      "path": "web/pose-art/pp_A05.png",
+      "sha256": "07d39c764933fa8f207066b4c4663ab7b8da4ebb139ae6ae2546152edc49e632"
+    },
+    {
+      "path": "web/pose-art/pp_A06.png",
+      "sha256": "ab783fd7259bda63a61aed8e8f8a9de6e50fd636ae25492b7d05d4b6d4a5cc0f"
+    },
+    {
+      "path": "web/pose-art/pp_A07.png",
+      "sha256": "6f297385a5bbba92bdeb5883ef844d345bb6b317fade255c3154cb34a90e5a7a"
+    },
+    {
+      "path": "web/pose-art/pp_A08.png",
+      "sha256": "1dc610369b7c7cb9aee4bcbd23dfc122ccebdd51e6b23d5a10e9d2d38c296e48"
+    },
+    {
+      "path": "web/pose-art/pp_A09.png",
+      "sha256": "3137b0b8ce3ed618e45854af2beeb85ca9d60e839c4bf36fe1a236298aec852c"
+    },
+    {
+      "path": "web/pose-art/pp_A10.png",
+      "sha256": "dc39d49320ed39e8d67c228b289b56bb54ea8f70247c8cabc6e770c43dc414c4"
+    },
+    {
+      "path": "web/pose-art/pp_A11.png",
+      "sha256": "7ffc77a3ef4669d99d389631cfd5a3f2924260f6ac9589f7c0e1cdd2c71ab8ad"
+    },
+    {
+      "path": "web/pose-art/pp_A12.png",
+      "sha256": "8d2b4995d8b22992d9bb9a0e91a1301bb26c767082a0034b600c959e833cbb2b"
+    },
+    {
+      "path": "web/pose-art/pp_A13.png",
+      "sha256": "a7850df711427acbb5f243d9390b3df4e4855c76679ca2a1ae4bc0b0c223f977"
+    },
+    {
+      "path": "web/pose-art/pp_A14.png",
+      "sha256": "eb45b2b7a5da78fcbada638f30dc7b36876d3f460c11e6dff2c35a36c70fd926"
+    },
+    {
+      "path": "web/pose-art/pp_B01.png",
+      "sha256": "1088124a471716e3992f06de5db4706ddf08438991d48d908fa310cd2a9d7047"
+    },
+    {
+      "path": "web/pose-art/pp_B02.png",
+      "sha256": "d7fd6792ba147f867fda4b90aa87d01ca127d24aa91416a409c0cc35e48e0900"
+    },
+    {
+      "path": "web/pose-art/pp_B03.png",
+      "sha256": "fb83001ca3066562ba15e562ccb942a289d43998116f945f5652ccaa7b217ebd"
+    },
+    {
+      "path": "web/pose-art/pp_B04.png",
+      "sha256": "ab11f7612c84148beb9e5736d219d9f19a9c40d9848b9bf6c4b4b3b9ad5be7fd"
+    },
+    {
+      "path": "web/pose-art/pp_B05.png",
+      "sha256": "8782d236d91a0ad76b7159b96a37464c3f1474cdbec08f0b936c6aa9f01e988d"
+    },
+    {
+      "path": "web/pose-art/pp_B06.png",
+      "sha256": "46d0f4b56c589a9f80a15cb22babe33cc78ae84ce950a1394423dd2253b892cb"
+    },
+    {
+      "path": "web/pose-art/wave.png",
+      "sha256": "293a8346677a8f9d584372589919ec9121fb4cd90a1036d4fe0942f3dbbf5de2"
+    },
+    {
+      "path": "web/poses.js",
+      "sha256": "6589e48550c9290e12846307918f892017585b066321f71d96fafa60766da342"
+    },
+    {
+      "path": "web/simple-fidelity.js",
+      "sha256": "52c7aaf70632623653cc08ecba75b6660a257f648bc05e069e3626effc7c2299"
+    },
+    {
+      "path": "web/simple-sample.js",
+      "sha256": "14ad591e01635ff9929ca38de6de6921efa134e29d3da89f2de2d388b1fdaa68"
+    },
+    {
+      "path": "web/studio.js",
+      "sha256": "9bd5cdbf2f876bfe0d54caafb40034b82ba547711fe49f0682b5c7a788cfdaca"
+    },
+    {
+      "path": "web/style.css",
+      "sha256": "025f26dc46aa95a8b46b8099264b1606801fa1ba39faed9dfe90cd35facf41a0"
+    },
+    {
+      "path": "web/unified-delete.js",
+      "sha256": "7fc3d9c430e66ac057624ff0bddd68cd8d68a3bd41739d8553aaf0b6be46814d"
+    },
+    {
+      "path": "启动工作台.vbs",
+      "sha256": "eea8c1108301f0233b26d2d1c89501870c26779609f203f21742285d1c311e90"
+    },
+    {
+      "path": "安装.cmd",
+      "sha256": "66f39824932bf3f1140bf85dba489c39cd7e2c32bfdf3be31874638b2e3256d3"
+    }
+  ]
 }
