@@ -1,0 +1,12 @@
+config.json
+.env
+.env.*
+!.env.example
+data/
+成品/
+qa/
+.venv/
+__pycache__/
+*.log
+*.zip
+tools/*.exe

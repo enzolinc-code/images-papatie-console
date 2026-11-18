@@ -1,0 +1,11 @@
+{
+  "app": "multi-template-phonecase-studio",
+  "port": 8799,
+  "model": "",
+  "endpoint": "",
+  "channel4_model": "",
+  "channel4_endpoint": "",
+  "channel5_model": "",
+  "channel5_endpoint": "",
+  "timeout": 900
+}
