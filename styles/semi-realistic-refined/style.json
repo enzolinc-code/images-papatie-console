@@ -1,0 +1,19 @@
+{
+  "id": "semi-realistic-refined",
+  "name": "半写实精绘",
+  "version": 1,
+  "enabled": true,
+  "preview": "styles/semi-realistic-refined/preview.jpg",
+  "source_skill": "portrait-style-channel4",
+  "rules": "只迁移画法。内容图决定人物身份、服装、配饰、原姿势与构图。写实比例略理想化，细灰褐变粗细轮廓线，柔和体积明暗，成束发丝，衣料结构清晰；脸、头发、手和服装统一插画绘制。风格图只提供绘制技法，不迁移其脸型、盘发、服饰和手势。",
+  "avoid": "粗黑描边、Q版、扁平漫画、照片滤镜、摄影毛孔、塑料皮肤、棋盘格背景、多余手指、裁断主体",
+  "output_pipeline": [
+    "image_generation",
+    "local_matting",
+    "manual_review"
+  ],
+  "default_count": 1,
+  "channel_policy": "fixed_channel_3",
+  "pose_policy": "preserve_source_pose",
+  "model": "gpt-image-2.6"
+}

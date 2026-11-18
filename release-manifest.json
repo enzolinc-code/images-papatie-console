@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-18",
+  "version": "2026-11-19",
   "files": [
     {
       "path": ".env.example",
@@ -27,7 +27,7 @@
     },
     {
       "path": "constraint_rules.py",
-      "sha256": "196b6b76460fc47a760c295bdd6837e3c3c93ac05a38e9cf085d5d4eaba6766c"
+      "sha256": "b1954f641cf712ab8576ea6fcdc744e39017e0b928cd5104cc646a3d77f85a40"
     },
     {
       "path": "docs/poses-preview.jpg",
@@ -48,6 +48,10 @@
     {
       "path": "image_trash.py",
       "sha256": "9c1e86d88c07820dd104463f0b5d7b8fe7bd9aeb00515697927a1fc1318f2ac9"
+    },
+    {
+      "path": "innovation.py",
+      "sha256": "68920e7439b5dfb0a0dbd530d6a66f26c6ee0693bfffc53d01dcb0d8ef23665b"
     },
     {
       "path": "integrations/xhs-folder-handoff.js",
@@ -91,7 +95,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "5f387b02defc13ee1f346eda70050e623121fb43cec32ca71bc9f65b6689a0cf"
+      "sha256": "b181d87af9f15d3557618b04c4718dc3d8f8ca735f9aaaeceef6cd9cbc13cbd5"
     },
     {
       "path": "requirements-matting.txt",
@@ -111,7 +115,7 @@
     },
     {
       "path": "server.py",
-      "sha256": "269a1e456619ec61ca33526ad68c067def11312b48618551b9b74bcb0b4652aa"
+      "sha256": "9647317ba6134244267757c9ac1e6c34fb595b5e861a59e92d19fda9fd504cda"
     },
     {
       "path": "setup.py",
@@ -130,12 +134,24 @@
       "sha256": "0ca1b969843abce170997253a80a17bc7652129e1399f281b2d61d8099079380"
     },
     {
+      "path": "styles/semi-realistic-refined/reference.png",
+      "sha256": "dc35dd672e6cfe7d111f4905856f7bed4c40fd5988760d576f8f734a5cd624bc"
+    },
+    {
+      "path": "styles/semi-realistic-refined/style.json",
+      "sha256": "a3bb2783fd3ff0c88a6a2052d32e5f5a2ec2299de15446b263b433f7b6c6674a"
+    },
+    {
       "path": "test_acrylic.py",
       "sha256": "596e6c2c696aeed965d00e408cea5b26c7c68e58453afdbefe1350ae985de8cd"
     },
     {
       "path": "test_auto_scene.py",
       "sha256": "3b7c5874b5b0fc60c59be11947a79f78faa6b3eacf470f281799e14e8bf69837"
+    },
+    {
+      "path": "test_channel4_uploads.py",
+      "sha256": "5b53e6d2d4e07c1cecfe7823b5e853d0ba56f30f5be76432ff60bb710d82e78c"
     },
     {
       "path": "test_constraint_rules.py",
@@ -164,6 +180,14 @@
     {
       "path": "test_image_channels.py",
       "sha256": "98e49a40366d8417fc37ed9a8e3428453f821f2dec9788352fcfce22333706de"
+    },
+    {
+      "path": "test_innovation.py",
+      "sha256": "c23591dbadd580b460ccd0e19750922e678f6142c863380c1acdb15a432258bf"
+    },
+    {
+      "path": "test_layout_repair.py",
+      "sha256": "9ea094cc64fa9a2fc22c3792ec4625d0efc51915c2b2750800f1b96400de5c7c"
     },
     {
       "path": "test_material_bridge.py",
@@ -231,7 +255,7 @@
     },
     {
       "path": "tools/xingqi_bridge.py",
-      "sha256": "31c73b1b4564b443d9c35132c3a8d718cba384c3672c0d30577a1e3663680c3f"
+      "sha256": "1d21dc980cb9789e68bd8b7de78900724da498fb1c032f96b49f7ad621f7cab6"
     },
     {
       "path": "web/app.js",
@@ -247,7 +271,7 @@
     },
     {
       "path": "web/gallery.js",
-      "sha256": "2a59214a139be68f5940bb7165d23177ac70047f337e5bc6b3e5f0ed3e689f8a"
+      "sha256": "52a7a06e50fdf31436de2dfc921c8fd3566ab4ae3598549ffc9b6f6390316d11"
     },
     {
       "path": "web/hands-correction.js",
@@ -259,7 +283,11 @@
     },
     {
       "path": "web/index.html",
-      "sha256": "42380a8b0d6ff8b95d61e1216d46f3dbf88bda6766e327b9f8bdf65656c0ec55"
+      "sha256": "b1fe701e1afe526e568a9edc20dd41af349da27c361961a96830d660ae9e4be7"
+    },
+    {
+      "path": "web/innovation.js",
+      "sha256": "fb771a0e324b1a6d761ac51884ac74b52214004db2e7911b9fae198120f0bec2"
     },
     {
       "path": "web/library.js",
@@ -491,15 +519,19 @@
     },
     {
       "path": "web/simple-sample.js",
-      "sha256": "14ad591e01635ff9929ca38de6de6921efa134e29d3da89f2de2d388b1fdaa68"
+      "sha256": "2d9966013a84be5809e80b7a08414edb45de56e5182f730a7b3d332714893c00"
     },
     {
       "path": "web/studio.js",
-      "sha256": "9bd5cdbf2f876bfe0d54caafb40034b82ba547711fe49f0682b5c7a788cfdaca"
+      "sha256": "ccba2f39bffdd8cac8388dbcf85bda281a9e5028f5943fb5ed9d2f93c65d4d3c"
+    },
+    {
+      "path": "web/style-art/semi-realistic-refined.jpg",
+      "sha256": "7e62d2f949ad39b4311f05b790264a177cd7d92a88d152d788ec86f702f7163b"
     },
     {
       "path": "web/style.css",
-      "sha256": "025f26dc46aa95a8b46b8099264b1606801fa1ba39faed9dfe90cd35facf41a0"
+      "sha256": "c7e2ea4b829356958f066b19259b7a4cf8eb7ed092d0226f99802bdcd7200e9b"
     },
     {
       "path": "web/unified-delete.js",

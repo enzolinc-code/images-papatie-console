@@ -1,7 +1,7 @@
 """User-authored consistency requirements; prompts, not an automatic output verifier."""
 from pathlib import Path
 RULES=(Path(__file__).parent/'prompts/lock-requirements.txt').read_text('utf-8').strip()
-MODES={'rebuild','scenes','poses','correct_hands','correct_identity','correct_material'}
+MODES={'rebuild','scenes','poses','correct_hands','correct_identity','correct_material','correct_layout'}
 def context(mode):
  if mode=='rebuild':return '参考分工：图1同时是人物身份、原动作、可见手指、遮挡与光影的唯一依据；不使用姿势库，不改变原动作，不虚构屏幕。只分离背景并高清重构。'
  if mode=='poses':return '参考分工：人物身份、服装、发型以原人物照片为准；姿势锁定指本次所选目标趴趴动作，不照搬原站姿。手指依照目标动作和可见遮挡关系自然重构，不强行补全。透明图稿不额外画屏幕。'

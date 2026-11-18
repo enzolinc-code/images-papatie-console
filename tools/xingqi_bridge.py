@@ -11,6 +11,44 @@ def ratio(value):
     a,b=map(float,value.replace('x',':').split(':'));r=a/b
     choices=['1:1','2:3','3:2','3:4','4:3','4:5','5:4','9:16','16:9','21:9']
     return min(choices,key=lambda s:abs(math.log(r/(float(s.split(':')[0])/float(s.split(':')[1])))))
+# Star-enabled uploads must remain below the provider's 10 MB decoded-file cap.
+UPLOAD_TARGET_BYTES = 9_000_000
+
+def reference_data_url(name):
+    """Prepare an in-memory upload copy; never overwrite the source image."""
+    p = Path(name)
+    raw = p.read_bytes()
+    with Image.open(io.BytesIO(raw)) as source:
+        if source.width * source.height > 80_000_000:
+            raise ValueError('参考图像素过大，请使用8000万像素以内的图片')
+        source.load()
+        actual_mime = {'PNG': 'image/png', 'JPEG': 'image/jpeg'}.get(source.format)
+        # Keep normal-size valid files byte-for-byte, including alpha and metadata.
+        if actual_mime and len(raw) <= UPLOAD_TARGET_BYTES:
+            return 'data:' + actual_mime + ';base64,' + base64.b64encode(raw).decode('ascii')
+        from PIL import ImageOps
+        image = ImageOps.exif_transpose(source)
+        alpha = 'A' in image.getbands() or 'transparency' in image.info
+        image = image.convert('RGBA' if alpha else 'RGB')
+    # Preserve resolution first. PNG retains transparent hair/finger gaps.
+    while True:
+        qualities = [95, 90, 85, 80] if not alpha else [None]
+        for quality in qualities:
+            buffer = io.BytesIO()
+            if alpha:
+                image.save(buffer, format='PNG', optimize=True)
+                mime = 'image/png'
+            else:
+                image.save(buffer, format='JPEG', quality=quality, optimize=False, subsampling=0)
+                mime = 'image/jpeg'
+            encoded = buffer.getvalue()
+            if len(encoded) <= UPLOAD_TARGET_BYTES:
+                return 'data:' + mime + ';base64,' + base64.b64encode(encoded).decode('ascii')
+        width, height = image.size
+        if max(width, height) <= 256:
+            raise ValueError('参考图压缩后仍超过上传限制，请更换参考图')
+        image = image.resize((max(1, round(width * .8)), max(1, round(height * .8))), Image.Resampling.LANCZOS)
+
 def payload(args):
     resolution=os.environ.get('CHANNEL4_RESOLUTION') or '1K'
     if resolution not in ('1K','2K','4K'):raise ValueError('通道4分辨率需为1K、2K或4K')
@@ -19,9 +57,7 @@ def payload(args):
     if args.image:
         params['images']=[]
         for name in args.image:
-            p=Path(name)
-            if p.stat().st_size>20*1024*1024:raise ValueError('参考图过大')
-            params['images'].append('data:'+(mimetypes.guess_type(p.name)[0] or 'image/png')+';base64,'+base64.b64encode(p.read_bytes()).decode('ascii'))
+            params['images'].append(reference_data_url(name))
     return {'model':args.model,'prompt':Path(args.prompt_file).read_text('utf-8'),'params':params}
 def unwrap(value):return value.get('data') if isinstance(value,dict) and isinstance(value.get('data'),dict) else value
 

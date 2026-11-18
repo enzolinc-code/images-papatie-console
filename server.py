@@ -17,6 +17,7 @@ import image_trash
 import quality_gate
 import auto_scene
 import image_channels
+import innovation
 DATA=Path(os.environ.get("PAPAPAI_DATA",str(ROOT/"data"))).resolve(); DATA.mkdir(parents=True,exist_ok=True)
 CFG={"port":8796,"endpoint":"","model":"gpt-image-2.6","channel4_model":"banana-pro","timeout":600,"matting_runtime":"runtime/matting"}
 if (ROOT/"config.json").exists():CFG.update(json.loads((ROOT/"config.json").read_text(encoding="utf-8")))
@@ -59,6 +60,8 @@ def save(j):
     except (OSError,ValueError) as exc:j['output_error']='成品目录保存失败：'+str(exc)
     atomic(DATA/"jobs"/j["id"]/"job.json",j)
 def asset_path(aid):
+    style_path=innovation.reference(ROOT,aid)
+    if style_path:return style_path
     if aid not in ASSETS:raise ValueError("图片不存在，请重新选择")
     p=(DATA/ASSETS[aid]["file"]).resolve()
     if not p.is_relative_to(DATA.resolve()) or not p.is_file():raise ValueError("图片文件不可用")
@@ -87,7 +90,7 @@ def fidelity_status():
 def snapshot():
     with LOCK:
         marks=material_marks.read(DATA);trash=material_trash.read(DATA)
-        return {"assets":[dict(a,**marks.get(a["id"],{}),trashed=a["id"] in trash,deleted_at=trash.get(a["id"],{}).get("deleted_at"),purged=bool(trash.get(a["id"],{}).get("purged"))) for a in ASSETS.values()],"jobs":list(reversed(list(JOBS.values()))),"poses":POSE_LIBRARY,
+        return {"assets":[dict(a,**marks.get(a["id"],{}),trashed=a["id"] in trash,deleted_at=trash.get(a["id"],{}).get("deleted_at"),purged=bool(trash.get(a["id"],{}).get("purged"))) for a in ASSETS.values()],"jobs":list(reversed(list(JOBS.values()))),"poses":POSE_LIBRARY,"styles":innovation.public(ROOT),
                 "health":health(),"master_profiles":load(DATA/"master-profiles.json",{}),"scene_templates":fidelity_status()}
 def channel_key(channel):return image_channels.key(channel)
 
@@ -96,7 +99,7 @@ def channel_model(channel):return image_channels.model(channel,CFG)
 def health():
     return {"version":"papapai-studio-1.3.0","channel4_model":channel_model("4"),"channel5_model":channel_model("5"),"channel5":bool(channel_key("5")),"channel4":bool(channel_key("4")),"key":bool(channel_key("3")),"endpoint":CFG["endpoint"],"model":CFG["model"],
             "matting":(Path(CFG["matting_runtime"])/"BiRefNet_HR-matting.onnx").is_file(),
-            "imageTool":(ROOT/"tools/image_api.py").is_file(),"root":str(ROOT),"unifiedTrash":True,"materialTrash":True,"materialMarks":True,"automaticScenes":True,"faceOrientation":True,"originalPoseRebuild":True,"consistencyRules":True,"handsCorrection":True,"identityLock":True,"simpleSample":True,"maskedEditing":"unverified"}
+            "imageTool":(ROOT/"tools/image_api.py").is_file(),"root":str(ROOT),"unifiedTrash":True,"materialTrash":True,"materialMarks":True,"automaticScenes":True,"faceOrientation":True,"originalPoseRebuild":True,"innovation":True,"innovationChannel":"3","innovationModel":"gpt-image-2.6","consistencyRules":True,"handsCorrection":True,"identityLock":True,"simpleSample":True,"maskedEditing":"unverified"}
 def pose_prompt(p,extra):
     return ("参考图是人物造型的唯一依据。制作写实上半身趴趴立牌可印刷图稿，保留同一人物面貌、发型、服装花纹、配饰及材质；"
             "按指定动作重构姿势。只要一个人物及完整双臂双手，不画下半身；只出现两只手，手指解剖自然。"
@@ -138,6 +141,11 @@ def make_plan(body):
         for pid in ids:
             if pid not in POSE_MAP:raise ValueError("姿势无效")
             p=POSE_MAP[pid];tasks.append({"name":p["name"],"refs":[source],"prompt":pose_prompt(p,extra),"size":"1:1","kind":"cutout"})
+    elif mode=="innovate":
+        source=body.get("source");path=asset_path(source)
+        if isinstance(source,str) and source.startswith("__style__:"):raise ValueError("请选择人物原图")
+        task=innovation.task(ROOT,source,body.get("style","semi-realistic-refined"),path)
+        tasks=[task]
     elif mode=="rebuild":
         source=body.get("source");path=asset_path(source)
         with Image.open(path) as im:ratio=im.width/im.height
@@ -167,7 +175,7 @@ def make_plan(body):
         prompt="图1是场景原图，图2红色覆盖区域为需要清理的旧立牌。移除该区域内原人物亚克力立牌及其配套印刷图案、接触阴影，合理补全被遮挡的显示器、墙面或桌垫背景。不要新人物、不要新立牌、不要文字，不改变红色范围之外的场景。只恢复干净背景。"
         ratio=base.width/base.height
         tasks=[{"name":"清理旧立牌背景","refs":[scene,a["id"]],"prompt":prompt,"size":"1:1" if .88<ratio<1.14 else ("3:4" if ratio<1 else "4:3"),"kind":"background","scene":scene,"template_id":template["id"],"mask_hash":template["mask_hash"]}]
-    elif mode in ("correct_hands","correct_identity","correct_material"):
+    elif mode in ("correct_hands","correct_identity","correct_material","correct_layout"):
         job=JOBS.get(str(body.get("job","")),{});index=body.get("index")
         if isinstance(index,bool) or not isinstance(index,int) or not 0<=index<len(job.get("tasks",[])):raise ValueError("原成品不存在")
         prior=job["tasks"][index]
@@ -177,7 +185,7 @@ def make_plan(body):
         for aid in (prior["asset"],product,scene):asset_path(aid)
         if not ASSETS[product].get("transparent"):raise ValueError("原人物透明参考图不可用")
         channel=str(body.get("channel","3"))
-        if prior.get("channel") in ("3","4","5") and channel!=prior["channel"]:raise ValueError("手部校正请沿用原任务通道")
+        if prior.get("channel") in ("3","4","5") and channel!=prior["channel"]:raise ValueError("修复请沿用原任务通道")
         prompt=("图1是需要二次校正的已生成亚克力立牌实拍场景；图2是人物动作、双手和手指结构的唯一标准透明图稿；图3是原始场景，仅供环境参考，不得恢复图3的旧人物。"
           "以图1为编辑底图，优先只修正立牌印刷人物中与图2不一致的双臂、手掌、手腕、手指和指缝。保持图2原始趴趴姿势、交叠顺序、左右手关系、每根手指的数量、关节弯曲和间距。不要新增手、融合手指、镜像或改变动作。"
           "保留图1的脸、发型、服饰、立牌位置大小角度、亚克力透明切边、侧面厚度、反光、接触阴影及实物摄影质感；保持显示器、屏幕内容、背景、桌面物品、机位与光照。不要把立牌变成真人或去掉亚克力材质。"
@@ -189,7 +197,8 @@ def make_plan(body):
             asset_path(identity)
             prompt='图1为当前亚克力立牌实拍成品；图2为原动作母版；图3为原场景；图4为身份母版。仅对照图4校正立牌印刷人物的身份相似度（'+person+'），保留图2手部动作、手指、衣服和图1场景、亚克力质感，不恢复旧人物。不要改手势。\n具体要求：'+extra
         if mode=='correct_material':prompt='图1为当前成品，图2为唯一人物动作母版，图3仅为原场景参考。只增强图1立牌的真实透明亚克力切边、侧面薄厚、反光、接触阴影和实物拍摄质感；保留人物面貌、原手部姿势与每根手指，不改变机位和背景，不恢复旧人物。具体要求：'+extra
-        tasks=[{"name":prior["name"]+(' · 人物校正' if mode=='correct_identity' else ' · 材质修复' if mode=='correct_material' else ' · 手部校正'),"refs":[prior["asset"],product,scene],"prompt":prompt,"size":prior.get("size","1:1"),"kind":"scene","correction_product":product,"original_scene":scene,"identity_asset":identity,"person_name":person,"parent_job":str(body["job"]),"parent_index":index,"correction_pass":int(prior.get("correction_pass",0))+1}]
+        if mode=='correct_layout':prompt='【本次贴合修正最高优先级】图1是待修复的实拍成品，图2是唯一人物动作母版，图3只提供原始显示器与环境参考，不恢复旧人物。识别图1显示器上沿的位置、可见宽度及透视，根据承托边可用范围和原场景合理实物比例，自适应调整整片亚克力立牌的整体等比大小、位置和必要透视。允许改正图1错误的立牌大小与摆放，不锁住这些错误；禁止通过缩放整张图、改变显示器尺寸或移动显示器来假装修正。让趴趴人物的前臂承托线准确贴合显示器上沿，肘部自然有支撑，垂下的手位于屏幕前方，前后遮挡关系合理；不悬浮、不穿入屏幕，不让胸口或头部代替前臂承托。只允许立牌作为整体合理适配，不单独拉长或缩短身体、手臂或手指，不镜像，不改变图2姿势和每根可见手指结构、人物面貌、服装及配饰。保留图1背景、显示器、屏幕内容、桌面、机位和环境光，重建正确接触阴影、透明亚克力薄边、厚度与反射，使之像真实摆放拍摄。若其他锁定要求与本次立牌大小/位置修正冲突，以本次整体贴合修正为准，原始母版内部动作仍需保持。具体补充要求：'+extra
+        tasks=[{"name":prior["name"]+(' · 自动贴合' if mode=='correct_layout' else ' · 人物校正' if mode=='correct_identity' else ' · 材质修复' if mode=='correct_material' else ' · 手部校正'),"refs":[prior["asset"],product,scene],"prompt":prompt,"size":prior.get("size","1:1"),"kind":"scene","correction_product":product,"original_scene":scene,"identity_asset":identity,"person_name":person,"parent_job":str(body["job"]),"parent_index":index,"correction_pass":int(prior.get("correction_pass",0))+1}]
         if identity:
             tasks[0]["refs"].append(identity)
             tasks[0]["prompt"]+="\n图4是始终固定的身份母版，人物身份为"+person+"；只参考其面貌，不改变图2动作。"
@@ -254,12 +263,13 @@ def make_plan(body):
         if task.get('prompt'):task['prompt']=constraint_rules.apply(mode,task['prompt'])
     face_orientation.apply(tasks,body,asset_path)
     if not 1<=len(tasks)<=60:raise ValueError("每批最多60张，请减少选择")
-    channel=str(body.get("channel","3"))
+    channel="3" if mode=="innovate" else str(body.get("channel","3"))
     if channel not in ("3","4","5"):raise ValueError("请选择通道3、4或5")
     for task in tasks:
         task["channel"]="local" if task["kind"]=="fidelity" and not task.get("automatic") else channel
-        frozen=task.get("model") if mode=="continue_sample" else (prior.get("model") if mode in ("correct_hands","correct_identity","correct_material","redo_scene") else None)
-        task["model"]=None if task["kind"]=="fidelity" else (frozen or channel_model(channel))
+        frozen=task.get("model") if mode=="continue_sample" else (prior.get("model") if mode in ("correct_hands","correct_identity","correct_material","correct_layout","redo_scene") else None)
+        task["model"]="gpt-image-2.6" if mode=="innovate" else (None if task["kind"]=="fidelity" else (frozen or channel_model(channel)))
+        if mode=="innovate":task["generation_policy"]="innovation-image26-v1"
     return tasks[:1] if mode=="scenes" and body.get("sample_first") else tasks
 def environment(channel="3"):
     env=dict(os.environ)
@@ -295,6 +305,7 @@ def generate(t,folder):
     if raw.exists():return raw
     prompt=folder/"prompt.txt";prompt.write_text(t["prompt"],encoding="utf-8")
     channel=t.get("channel","3");model=t.get("model") or channel_model(channel)
+    if t.get("generation_policy")=="innovation-image26-v1":channel,model="3","gpt-image-2.6"
     if channel=="4" and model.startswith("banana"):
         cmd=[CFG["python"],"-X","utf8",str(ROOT/"tools/xingqi_bridge.py"),"--prompt-file",str(prompt),"--out",str(raw),"--size",t["size"],"--model",model,"--timeout",str(CFG["timeout"])]
     elif channel=="5":
@@ -484,6 +495,8 @@ def worker():
                 save(j)
         finally:Q.task_done()
 def create_job(body):
+    body=dict(body)
+    if body.get("mode")=="innovate":body["channel"]="3"
     nonce=body.get("nonce")
     if not isinstance(nonce,str) or not re.fullmatch(r"[a-zA-Z0-9-]{12,100}",nonce):raise ValueError("提交标识无效，请刷新")
     with LOCK:
@@ -500,7 +513,7 @@ def create_job(body):
         folder=DATA/"jobs"/jid;folder.mkdir(parents=True)
         j={"id":jid,"nonce":nonce,"mode":body["mode"],"created":time.time(),"status":"queued","stop":False,
            "tasks":[dict(t,status="pending") for t in tasks]}
-        if body.get('mode') in ('correct_hands','correct_identity','correct_material'):
+        if body.get('mode') in ('correct_hands','correct_identity','correct_material','correct_layout'):
             source_job=JOBS.get(str(body.get('job','')),{})
             root=source_job.get('id') if source_job.get('sample_remaining') else source_job.get('sample_root')
             if root:j['sample_root']=root
@@ -539,7 +552,11 @@ class Handler(BaseHTTPRequestHandler):
                 file=ROOT/"web/pose-art"/name
                 if not file.exists():return self.send({"error":"图例待补"},code=404)
                 return self.send(file.read_bytes(),"image/png")
-            if path not in ("/","/app.js","/poses.js","/fidelity.js","/gallery.js","/studio.js","/library.js","/style.css"):return self.send({"error":"不存在"},code=404)
+            if path.startswith('/style-art/'):
+                name=path.rsplit('/',1)[-1]
+                if name not in {s['id']+'.jpg' for s in innovation.styles(ROOT)}:return self.send({'error':'不存在'},code=404)
+                return self.send((ROOT/'web/style-art'/name).read_bytes(),'image/jpeg')
+            if path not in ("/","/app.js","/poses.js","/fidelity.js","/gallery.js","/studio.js","/innovation.js","/library.js","/style.css"):return self.send({"error":"不存在"},code=404)
             p=ROOT/"web"/("index.html" if path=="/" else path[1:])
             return self.send(p.read_bytes(),{".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",".css":"text/css; charset=utf-8"}[p.suffix])
         except (ValueError,OSError) as exc:self.send({"error":str(exc)},code=400)
