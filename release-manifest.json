@@ -95,7 +95,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "b181d87af9f15d3557618b04c4718dc3d8f8ca735f9aaaeceef6cd9cbc13cbd5"
+      "sha256": "a4ff0cc06f568f79f5ac9bd9a2da996c17ab8315f6701cb0a92b163ebd8d3220"
     },
     {
       "path": "requirements-matting.txt",
@@ -259,7 +259,7 @@
     },
     {
       "path": "web/app.js",
-      "sha256": "d9dba0ab8b2e79cc04af3c013d4a7c034fb6c965d2cc0c24a4fc08bac39c6a0a"
+      "sha256": "0fd821b7cedcb5e7c2f6d9b0481fe1530340b10a12558446ebbe63a315f992d9"
     },
     {
       "path": "web/constraint-rules.js",
@@ -283,7 +283,7 @@
     },
     {
       "path": "web/index.html",
-      "sha256": "b1fe701e1afe526e568a9edc20dd41af349da27c361961a96830d660ae9e4be7"
+      "sha256": "d2a215f6a5446181d39713c44c20a9627b933f9dff0d30b7711f7ee61978995d"
     },
     {
       "path": "web/innovation.js",
@@ -519,11 +519,11 @@
     },
     {
       "path": "web/simple-sample.js",
-      "sha256": "2d9966013a84be5809e80b7a08414edb45de56e5182f730a7b3d332714893c00"
+      "sha256": "8932613ee6298202233c228f8488fc64eeb9f4deb95ff08db081919541d0787a"
     },
     {
       "path": "web/studio.js",
-      "sha256": "ccba2f39bffdd8cac8388dbcf85bda281a9e5028f5943fb5ed9d2f93c65d4d3c"
+      "sha256": "eafe0e6c57f9c42f9f0e00459ec3c20951a2cb6c8a58ba05c92f97bdbce86f12"
     },
     {
       "path": "web/style-art/semi-realistic-refined.jpg",
@@ -531,7 +531,7 @@
     },
     {
       "path": "web/style.css",
-      "sha256": "c7e2ea4b829356958f066b19259b7a4cf8eb7ed092d0226f99802bdcd7200e9b"
+      "sha256": "ae12e469ef749cbe4115fc8f098df1ff9cc2fbe69fd89a33dbb2c31016d69c90"
     },
     {
       "path": "web/unified-delete.js",

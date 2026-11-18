@@ -130,3 +130,14 @@ body[data-innovation=true] #stMakeMode.active,body[data-innovation=true] #stRebu
 @media(max-width:650px){#innovation .in-panel{padding:16px}#innovation .in-footer{flex-direction:column;align-items:stretch}#innovation .in-steps{gap:18px}#innovation .in-card{width:180px}#innovation .in-future-left,#innovation .in-card-left{left:calc(50% - 195px)}#innovation .in-future-right,#innovation .in-card-right{right:calc(50% - 195px)}}
 @media(prefers-reduced-motion:reduce){#innovation .in-card{transition:none}}
 #innovation .in-source{cursor:pointer}#innovation .in-source:hover{border-color:#d98a6c}#innovation .in-source:focus-visible{outline:2px solid #d98a6c;outline-offset:3px}#innovation .in-source[aria-disabled="true"]{cursor:wait}
+
+/* Approved scene simplification: AI only, optional placement and combinations. */
+#scene .scene-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#scene .scene-heading h2{margin:0}#scene .scene-engine-note{font-size:11px;padding:5px 9px;background:#f3f6f7;border-radius:5px;color:#7c8b94;white-space:nowrap}
+#scene .scene-advanced{margin-top:15px;padding-top:14px;border-top:1px solid #edf0f2}
+#scene .scene-advanced>summary{font-size:12px;color:#76858e;cursor:pointer}
+#scene .scene-advanced[open]>summary{margin-bottom:15px}
+#scene .scene-advanced-fields{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+#scene .scene-advanced-fields .field{margin:0;font-size:12px}
+#scene #sceneAdvancedCost{font-size:11px;line-height:1.8;margin:10px 0 0}
+@media(max-width:800px){#scene .scene-advanced-fields{grid-template-columns:1fr}}
